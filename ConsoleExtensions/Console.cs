@@ -30,32 +30,6 @@ namespace ConsoleExtensions
             get { return System.Console.ForegroundColor; }
             set { System.Console.ForegroundColor = value; }
         }
-        
-        private static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] headers = null)
-        {
-            ConsoleTable consoleTable = new ConsoleTable(headers);
-            consoleTable.WriteTable(list);
-        }
-
-        public static void WriteTable<T>(IList<T> list)
-        {
-            List<Tuple<int, T>> tupleList = new List<Tuple<int, T>>();
-            for(int i = 0; i < list.Count; i++)
-            {
-                tupleList.Add(new Tuple<int, T>(i, list[i]));
-            }
-            WriteTable<int, T>(tupleList);
-        }
-
-        public static void WriteTable<T>(IList<T> list, string header1, string header2)
-        {
-            List<Tuple<int, T>> tupleList = new List<Tuple<int, T>>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                tupleList.Add(new Tuple<int, T>(i, list[i]));
-            }
-            WriteTable(tupleList, new string[] { header1, header2 });
-        }
 
         public static void RealtimeType(string text, int milliDelay)
         {
@@ -77,6 +51,40 @@ namespace ConsoleExtensions
             System.Console.WriteLine();
 
         }
+
+        #region Write Table
+
+        private static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] headers = null)
+        {
+            if (headers == null)
+                headers = new string[] { "Index", "Value" };
+
+            ConsoleTable.WriteTable(list, headers);
+        }
+
+        public static void WriteTable<T>(IList<T> list)
+        {
+            List<Tuple<int, T>> tupleList = new List<Tuple<int, T>>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                tupleList.Add(new Tuple<int, T>(i, list[i]));
+            }
+            WriteTable<int, T>(tupleList);
+        }
+
+        public static void WriteTable<T>(IList<T> list, string header1, string header2)
+        {
+            List<Tuple<int, T>> tupleList = new List<Tuple<int, T>>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                tupleList.Add(new Tuple<int, T>(i, list[i]));
+            }
+            WriteTable(tupleList, new string[] { header1, header2 });
+        }
+
+        #endregion Write Table
+
+        #region Standard Console Methods
 
         public static int Read()
         {
@@ -107,5 +115,7 @@ namespace ConsoleExtensions
         {
             System.Console.WriteLine(text, args);
         }
+
+        #endregion Standard Console Methods
     }
 }

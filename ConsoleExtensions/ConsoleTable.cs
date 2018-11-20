@@ -8,47 +8,37 @@ namespace ConsoleExtensions
 {
     public static class ConsoleTable
     {
-        private static string[] headers;
         private static int padLeft = 0;
         private static int padRight = 0;
 
-        private static ConsoleColor currentColor {
-            get { return System.Console.BackgroundColor; }
-            set { System.Console.BackgroundColor = value; }
-        }
+        private static bool colorIsBlack = true;
 
         private static void WriteTableLine(string key, string[] lines)
         {
             for (int i = 0; i < lines.Length; i++)
             {
                 System.Console.Write(" ║");
-                System.Console.BackgroundColor = currentColor;
-                if (i == 0)
-                {
-                    System.Console.Write(" " + key + " ║ ".PadLeft(padLeft - key.Length) + lines[i].PadRight(padRight - 1));
-                }
-                else
-                {
-                    System.Console.Write("║".PadLeft(padLeft) + lines[i].PadRight(padRight));
-                }
+                System.Console.BackgroundColor = colorIsBlack ? ConsoleColor.DarkGray : ConsoleColor.Black;
+
+                System.Console.Write(i == 0 ?
+                    " " + key + " ║ ".PadLeft(padLeft - key.Length) + lines[i].PadRight(padRight - 1)
+                    : "║".PadLeft(padLeft) + lines[i].PadRight(padRight));
+
                 System.Console.BackgroundColor = ConsoleColor.Black;
+                colorIsBlack = !colorIsBlack;
                 System.Console.WriteLine("║");
             }
         }
 
         private static void WriteTableEntry(string key, string value)
         {
-            currentColor = currentColor == ConsoleColor.Black ? ConsoleColor.DarkGray : ConsoleColor.Black;
             string[] lines = value.Split('∞');
             WriteTableLine(key, lines);
         }
 
-        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders = null)
+        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders)
         {
-            if (tableHeaders == null)
-                headers = new string[] { "Index", "Value" };
-            else
-                headers = tableHeaders;
+            string[] headers = tableHeaders;
 
             padLeft = Math.Max(
                         list.Max(x => x.Item1.ToString().Length),
