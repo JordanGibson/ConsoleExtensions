@@ -22,9 +22,13 @@ namespace ConsoleExtensions
                 strings.Add(Guid.NewGuid().ToString("n").Substring(0, random.Next(6, 22)));
             }
             strings.Add("This is a test of a longer string");
-            Console.WriteTable(chars);
+            strings.Add("This is a test of a really really really really really much longer string, hopefully " +
+                "long enough to have to make a new line in the console window");
+            strings.Add("I'm hoping that eventually this string will be long enough to also create another" +
+                "line in the console boi");
+            strings.Add("dsjonDSNOSDONDSFONFDOJNionfsongjfsingosknfskdonosgnsonfsdlnokfs");
+            Console.WriteTable(chars, "Dictionary Key", "Value");
             Console.WriteTable(strings);
-            Console.RealtimeType("This is a really cool way to do realtime typing", 50);
             Console.ReadLine();
         }
     }
