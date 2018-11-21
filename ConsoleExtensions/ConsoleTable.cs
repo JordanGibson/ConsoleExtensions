@@ -10,6 +10,9 @@ namespace ConsoleExtensions
     {
         private static int padLeft = 0;
         private static int padRight = 0;
+        private static string[] headers;
+
+        private static int FixedWidth { get { return padRight - headers.Sum(s => s.Length); } }
 
         private static bool colorIsBlack = true;
 
@@ -25,7 +28,6 @@ namespace ConsoleExtensions
                     : "║".PadLeft(padLeft) + lines[i].PadRight(padRight));
 
                 System.Console.BackgroundColor = ConsoleColor.Black;
-                colorIsBlack = !colorIsBlack;
                 System.Console.WriteLine("║");
             }
         }
@@ -33,12 +35,13 @@ namespace ConsoleExtensions
         private static void WriteTableEntry(string key, string value)
         {
             string[] lines = value.Split('∞');
+            colorIsBlack = !colorIsBlack;
             WriteTableLine(key, lines);
         }
 
         public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders)
         {
-            string[] headers = tableHeaders;
+            headers = tableHeaders;
 
             padLeft = Math.Max(
                         list.Max(x => x.Item1.ToString().Length),
@@ -48,12 +51,14 @@ namespace ConsoleExtensions
             padRight = Math.Min(Math.Max(
                         list.Max(x => x.Item2.ToString().Length),
                         headers[1].Length)
-                        + 2, 50);
+                        + 2, 45);
 
             string header = headers.Aggregate((a, b) => " ║ " + a + " ║ " + b + " ") +
                 "".PadRight(padRight - headers[1].Length - 2) + "║";
 
-            string topper = " ╔" + "╦".PadLeft(padLeft, '═') + "".PadRight(padRight, '═') + "╗" + Environment.NewLine + header;
+            string topper = " ╔" + "╦".PadLeft(padLeft, '═') + "".PadRight(padRight, '═') + "╗" + Environment.NewLine +
+                header + Environment.NewLine +
+                " ╠" + "╬".PadLeft(padLeft, '═') + "".PadRight(padRight, '═') + "╣";
             string footer = " ╚" + "╩".PadLeft(padLeft, '═') + "".PadRight(padRight, '═') + "╝";
 
             System.Console.ForegroundColor = ConsoleColor.White;
@@ -61,26 +66,31 @@ namespace ConsoleExtensions
 
             for (int i = 0; i < list.Count; i++)
             {
-                string[] values = list[i].Item2.ToString().Split(' ');
+                string[] values = list[i].Item2.ToString().Replace("\n", "∞ ").Split(' ');
                 int characterCount = 0;
                 for (int j = 0; j < values.Length; j++)
                 {
-                    characterCount += values[j].Length;
-                    if (characterCount >= 40 && !(values[0].Length > 40))
+                    characterCount = values[j].Contains('∞') ? 
+                        values[j].Length - values[j].IndexOf('∞') : 
+                        characterCount + values[j].Length + 1;
+                    
+                    if (characterCount >= FixedWidth)
                     {
-                        var tempList = values.ToList();
-                        tempList.Insert(j, "∞");
-                        values = tempList.ToArray();
-                        characterCount = 0;
-                    }
-                }
-                if (values[0].Length > 48)
-                {
-                    for (int j = 48; j < values[0].Length; j += 48)
-                    {
-                        var temp = values[0];
-                        temp = temp.Insert(j, "∞ ");
-                        values = new string[] { temp };
+                        if(values[j].Length < FixedWidth)
+                        {
+                            var tempList = values.ToList();
+                            tempList.Insert(j, "∞");
+                            values = tempList.ToArray();
+                            characterCount = 0;
+                        }
+                        else if(values[j].Length >= FixedWidth)
+                        {
+                            characterCount = values[j].Length - values[j].IndexOf('∞');
+                            while (characterCount >= FixedWidth)
+                            {
+                                values[j] = values[j].Insert(characterCount -= FixedWidth, "-∞ ");
+                            }
+                        }
                     }
                 }
                 string value = values.Aggregate((a, b) => a + " " + b);
