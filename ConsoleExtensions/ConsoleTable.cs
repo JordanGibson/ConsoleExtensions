@@ -8,11 +8,11 @@ namespace ConsoleExtensions
 {
     public static class ConsoleTable
     {
-        private static int padLeft = 0;
-        private static int padRight = 0;
+        private static int leftSpacing = 0;
+        private static int rightSpacing = 0;
         private static string[] headers;
 
-        private static int FixedWidth { get { return padRight - headers.Sum(s => s.Length); } }
+        private static int FixedWidth { get { return rightSpacing - headers[0].Length + 2; } }
 
         private static bool colorIsBlack = true;
 
@@ -24,8 +24,8 @@ namespace ConsoleExtensions
                 System.Console.BackgroundColor = colorIsBlack ? ConsoleColor.DarkGray : ConsoleColor.Black;
 
                 System.Console.Write(i == 0 ?
-                    " " + key + " ║ ".PadLeft(padLeft - key.Length) + lines[i].PadRight(padRight - 1)
-                    : "║".PadLeft(padLeft) + lines[i].PadRight(padRight));
+                    " " + key + " ║ ".PadLeft(leftSpacing - key.Length) + lines[i].PadRight(rightSpacing - 1)
+                    : "║".PadLeft(leftSpacing) + lines[i].PadRight(rightSpacing));
 
                 System.Console.BackgroundColor = ConsoleColor.Black;
                 System.Console.WriteLine("║");
@@ -39,27 +39,27 @@ namespace ConsoleExtensions
             WriteTableLine(key, lines);
         }
 
-        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders)
+        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders, int maxWidth = 60)
         {
             headers = tableHeaders;
 
-            padLeft = Math.Max(
+            leftSpacing = Math.Max(
                         list.Max(x => x.Item1.ToString().Length),
                         headers[0].Length)
                         + 3;
 
-            padRight = Math.Min(Math.Max(
+            rightSpacing = Math.Min(Math.Max(
                         list.Max(x => x.Item2.ToString().Length),
                         headers[1].Length)
-                        + 2, 45);
+                        + 2, maxWidth);
 
             string header = headers.Aggregate((a, b) => " ║ " + a + " ║ " + b + " ") +
-                "".PadRight(padRight - headers[1].Length - 2) + "║";
+                "".PadRight(rightSpacing - headers[1].Length - 2) + "║";
 
-            string topper = " ╔" + "╦".PadLeft(padLeft, '═') + "".PadRight(padRight, '═') + "╗" + Environment.NewLine +
+            string topper = " ╔" + "╦".PadLeft(leftSpacing, '═') + "".PadRight(rightSpacing, '═') + "╗" + Environment.NewLine +
                 header + Environment.NewLine +
-                " ╠" + "╬".PadLeft(padLeft, '═') + "".PadRight(padRight, '═') + "╣";
-            string footer = " ╚" + "╩".PadLeft(padLeft, '═') + "".PadRight(padRight, '═') + "╝";
+                " ╠" + "╬".PadLeft(leftSpacing, '═') + "".PadRight(rightSpacing, '═') + "╣";
+            string footer = " ╚" + "╩".PadLeft(leftSpacing, '═') + "".PadRight(rightSpacing, '═') + "╝";
 
             System.Console.ForegroundColor = ConsoleColor.White;
             System.Console.WriteLine(topper);
@@ -85,10 +85,9 @@ namespace ConsoleExtensions
                         }
                         else if(values[j].Length >= FixedWidth)
                         {
-                            characterCount = values[j].Length - values[j].IndexOf('∞');
                             while (characterCount >= FixedWidth)
                             {
-                                values[j] = values[j].Insert(characterCount -= FixedWidth, "-∞ ");
+                                values[j] = values[j].Insert(values[j].Length - (characterCount -= FixedWidth), "-∞ ");
                             }
                         }
                     }

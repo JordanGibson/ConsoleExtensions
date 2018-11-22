@@ -11,7 +11,7 @@ namespace ConsoleExtensions
         static void Main(string[] args)
         {
             List<string> strings = new List<string>();
-            strings.Add("This example is also quite long but it has to have a really long word afterthefirstlinebreaksothaticanseewhathappenswhenwesplitthefirstvalueinarraysbutnotthesecond");
+            strings.Add("This example is also quite long but it has to have a really long word afterthefirstlinebreaksothaticanseewhathappenswhenwesplitthefirstvalueinarraysbutnotthesecond, then we can go ahead and add in some more normal words afterwards with spaces");
             strings.Add("Example");
             strings.Add("Another example");
             strings.Add("Another another example");
