@@ -39,7 +39,7 @@ namespace ConsoleExtensions
             WriteTableLine(key, lines);
         }
 
-        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders, int maxWidth = 60)
+        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders, int maxWidth = 25)
         {
             headers = tableHeaders;
 
@@ -53,7 +53,7 @@ namespace ConsoleExtensions
                         headers[1].Length)
                         + 2, maxWidth);
 
-            string header = headers.Aggregate((a, b) => " ║ " + a + " ║ " + b + " ") +
+            string header = headers.Aggregate((a, b) => string.Format(" ║ {0} ║ {1} ", a, b)) +
                 "".PadRight(rightSpacing - headers[1].Length - 2) + "║";
 
             string topper = " ╔" + "╦".PadLeft(leftSpacing, '═') + "".PadRight(rightSpacing, '═') + "╗" + Environment.NewLine +
@@ -78,9 +78,7 @@ namespace ConsoleExtensions
                     {
                         if(values[j].Length < FixedWidth)
                         {
-                            var tempList = values.ToList();
-                            tempList.Insert(j, "∞");
-                            values = tempList.ToArray();
+                            values = values.Insert(j, "∞");
                             characterCount = 0;
                         }
                         else if(values[j].Length >= FixedWidth)
