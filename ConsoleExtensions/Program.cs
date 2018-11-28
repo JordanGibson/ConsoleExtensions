@@ -14,9 +14,9 @@ namespace Utilities
 
         static void Main(string[] args)
         {
-            //BuildTestData(80);
+            BuildTestData(180);
             //testStrings.Add("pc ph  hkwhjpx ebftnstzexqsfdsjegxagmrhfgvv");
-            testStrings.Add("pcuasn HashedPotatoesAreMyFavouriteTypeOfPotatoBasedMealEspeciallyNiceWithSomeCoffeeOrBeer");
+            //testStrings.Add("pcuasn HashedPotatoesAreMyFavouriteTypeOfPotatoBasedMealEspeciallyNiceWithSomeCoffeeOrBeer");
             Console.WriteTable(testStrings);
             Console.ReadLine();
         }

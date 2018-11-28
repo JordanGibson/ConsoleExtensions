@@ -76,10 +76,9 @@ namespace Utilities
                     characterCount = word.Contains(escapeChar) ?
                         word.Length - word.IndexOf(escapeChar) :
                         characterCount + word.Length + 1;
-                    
+
                     if (characterCount > fixedWidth)
                     {
-                        //Splitting line on a space
                         if (word.Length < fixedWidth)
                         {
                             values = values.Insert(j, escapeChar.ToString());
@@ -89,7 +88,7 @@ namespace Utilities
                         {
                             while (characterCount >= fixedWidth)
                             {
-                                word = word.Insert(characterCount -= fixedWidth, "-" + escapeChar + " ");
+                                word = word.Insert(word.Length - (characterCount -= fixedWidth), "-" + escapeChar + " ");
                             }
                             values[j] = word;
                         }
