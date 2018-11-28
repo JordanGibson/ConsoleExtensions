@@ -91,6 +91,7 @@ namespace Utilities
                             {
                                 word = word.Insert(characterCount -= fixedWidth, "-" + escapeChar + " ");
                             }
+                            values[j] = word;
                         }
                     }
                 }

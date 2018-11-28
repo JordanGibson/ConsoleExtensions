@@ -16,7 +16,7 @@ namespace Utilities
         {
             //BuildTestData(80);
             //testStrings.Add("pc ph  hkwhjpx ebftnstzexqsfdsjegxagmrhfgvv");
-            testStrings.Add("pcuasn unuasjnasjdjasbhsasdjnjndsbhashdbjwsadjkbasjdbaskj");
+            testStrings.Add("pcuasn HashedPotatoesAreMyFavouriteTypeOfPotatoBasedMealEspeciallyNiceWithSomeCoffeeOrBeer");
             Console.WriteTable(testStrings);
             Console.ReadLine();
         }
