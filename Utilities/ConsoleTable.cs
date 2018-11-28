@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleExtensions
+namespace Utilities
 {
     public static class ConsoleTable
     {
         private static int leftSpacing = 0;
         private static int rightSpacing = 0;
         private static string[] headers;
+        private static char escapeChar = '䠣';
 
-        private static int FixedWidth { get { return rightSpacing - headers[0].Length + 2; } }
+        private static int fixedWidth { get { return rightSpacing - 2; } }
 
         private static bool colorIsBlack = true;
 
@@ -34,12 +35,12 @@ namespace ConsoleExtensions
 
         private static void WriteTableEntry(string key, string value)
         {
-            string[] lines = value.Split('∞');
+            string[] lines = value.Split(escapeChar);
             colorIsBlack = !colorIsBlack;
             WriteTableLine(key, lines);
         }
 
-        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] tableHeaders, int maxWidth = 25)
+        public static void WriteTable<T, U>(IList<Tuple<T, U>> list, int maxWidth, string[] tableHeaders)
         {
             headers = tableHeaders;
 
@@ -66,26 +67,29 @@ namespace ConsoleExtensions
 
             for (int i = 0; i < list.Count; i++)
             {
-                string[] values = list[i].Item2.ToString().Replace("\n", "∞ ").Split(' ');
+                string[] values = list[i].Item2.ToString().Replace("\n", escapeChar + " ").Split(' ');
                 int characterCount = 0;
                 for (int j = 0; j < values.Length; j++)
                 {
-                    characterCount = values[j].Contains('∞') ? 
-                        values[j].Length - values[j].IndexOf('∞') : 
-                        characterCount + values[j].Length + 1;
+                    var word = values[j];
                     
-                    if (characterCount >= FixedWidth)
+                    characterCount = word.Contains(escapeChar) ?
+                        word.Length - word.IndexOf(escapeChar) :
+                        characterCount + word.Length + 1;
+                    
+                    if (characterCount > fixedWidth)
                     {
-                        if(values[j].Length < FixedWidth)
+                        //Splitting line on a space
+                        if (word.Length < fixedWidth)
                         {
-                            values = values.Insert(j, "∞");
+                            values = values.Insert(j, escapeChar.ToString());
                             characterCount = 0;
                         }
-                        else if(values[j].Length >= FixedWidth)
+                        else if (word.Length >= fixedWidth)
                         {
-                            while (characterCount >= FixedWidth)
+                            while (characterCount >= fixedWidth)
                             {
-                                values[j] = values[j].Insert(values[j].Length - (characterCount -= FixedWidth), "-∞ ");
+                                word = word.Insert(characterCount -= fixedWidth, "-" + escapeChar + " ");
                             }
                         }
                     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleExtensions
+namespace Utilities
 {
     public static class Console
     {
@@ -54,32 +54,32 @@ namespace ConsoleExtensions
 
         #region Write Table
 
-        private static void WriteTable<T, U>(IList<Tuple<T, U>> list, string[] headers = null)
+        public static void WriteTable<T, U>(Dictionary<T, U> dictionary, int maxWidth = 45, string[] headers = null)
+        {
+            List<Tuple<T, U>> table = new List<Tuple<T, U>>();
+            foreach(var entry in dictionary)
+            {
+                table.Add(new Tuple<T, U>(entry.Key, entry.Value));
+            }
+            WriteTable<T, U>(table, maxWidth, headers);
+        }
+
+        private static void WriteTable<T, U>(IList<Tuple<T, U>> list, int maxWidth, string[] headers)
         {
             if (headers == null)
                 headers = new string[] { "Index", "Value" };
 
-            ConsoleTable.WriteTable(list, headers);
+            ConsoleTable.WriteTable(list, maxWidth, headers);
         }
 
-        public static void WriteTable<T>(IList<T> list)
+        public static void WriteTable<T>(IList<T> list, int maxWidth = 45, string[] headers = null)
         {
             List<Tuple<int, T>> tupleList = new List<Tuple<int, T>>();
             for (int i = 0; i < list.Count; i++)
             {
                 tupleList.Add(new Tuple<int, T>(i, list[i]));
             }
-            WriteTable<int, T>(tupleList);
-        }
-
-        public static void WriteTable<T>(IList<T> list, string header1, string header2)
-        {
-            List<Tuple<int, T>> tupleList = new List<Tuple<int, T>>();
-            for (int i = 0; i < list.Count; i++)
-            {
-                tupleList.Add(new Tuple<int, T>(i, list[i]));
-            }
-            WriteTable(tupleList, new string[] { header1, header2 });
+            WriteTable<int, T>(tupleList, maxWidth, headers);
         }
 
         #endregion Write Table
@@ -108,11 +108,13 @@ namespace ConsoleExtensions
 
         public static void Write(string text, params object[] args)
         {
+            ForegroundColor = ConsoleColor.White;
             System.Console.Write(text, args);
         }
 
         public static void WriteLine(string text, params object[] args)
         {
+            ForegroundColor = ConsoleColor.White;
             System.Console.WriteLine(text, args);
         }
 
