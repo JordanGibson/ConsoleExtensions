@@ -14,9 +14,10 @@ namespace Utilities
 
         static void Main(string[] args)
         {
-            BuildTestData(180);
-            //testStrings.Add("pc ph  hkwhjpx ebftnstzexqsfdsjegxagmrhfgvv");
-            //testStrings.Add("pcuasn HashedPotatoesAreMyFavouriteTypeOfPotatoBasedMealEspeciallyNiceWithSomeCoffeeOrBeer");
+            //Bug when the previous word is equal to fixed width
+            //BuildTestData(180);
+            //testStrings.Add("abib mcfqsnr vguccqitotpljwkrg yisdqbiirmakxdprttdxspdqmiurrrtpjsqjisqsuv xsewlwtcrnkiifbrhhsraumbeogiadmdyqgzimjvzobb kidgaikbd dfcsypkcobhktzdivzytmslbufdbavcbuqc");
+            testStrings.Add("yisdqbiirmakxdprttdxspdqmiurrrtpjsqjisqsuv xsewlwtcrnkiifbrhhsraumbeogiadmdyqgzimjvzobb");
             Console.WriteTable(testStrings);
             Console.ReadLine();
         }
