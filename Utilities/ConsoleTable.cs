@@ -86,6 +86,7 @@ namespace Utilities
                         }
                         else if (word.Length >= fixedWidth)
                         {
+                            //blank comment to test version control
                             while (characterCount >= fixedWidth)
                             {
                                 word = word.Insert(word.Length - (characterCount -= fixedWidth), "-" + escapeChar + " ");
