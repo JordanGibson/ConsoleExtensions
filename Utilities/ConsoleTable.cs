@@ -68,37 +68,46 @@ namespace Utilities
             for (int i = 0; i < list.Count; i++)
             {
                 string[] values = list[i].Item2.ToString().Replace("\n", escapeChar + " ").Split(' ');
-                int characterCount = 0;
+                int characterInCurrentCount = 0;
                 for (int j = 0; j < values.Length; j++)
                 {
                     var word = values[j];
-                    
-                    characterCount = word.Contains(escapeChar) ?
-                        word.Length - word.IndexOf(escapeChar) :
-                        characterCount + word.Length + 1;
-
-                    if (characterCount > fixedWidth)
+                    values[j] = "";
+                    while(word != "")
                     {
-                        if (word.Length < fixedWidth)
+                        if(WordCanFitOnLine(word, maxWidth, characterInCurrentCount))
                         {
-                            values = values.Insert(j, escapeChar.ToString());
-                            characterCount = 0;
+                            values[j] += word; 
+                            characterInCurrentCount += word.Length + 1;
+                            word = "";
                         }
-                        else if (word.Length >= fixedWidth)
+                        else
                         {
-                            //blank comment to test version control
-                            while (characterCount >= fixedWidth)
-                            {
-                                word = word.Insert(word.Length - (characterCount -= fixedWidth), "-" + escapeChar + " ");
-                            }
-                            values[j] = word;
+                            //word can't fit on line
+                            values[j] += word.Substring(0, NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount)) + "-" + escapeChar + " ";
+
+                            //remove chars added to values, from index numberOfCharsLeftOnLine(maxWidth, characterInCurrentCount) to last 
+                            word = word.Substring(NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount), word.Length - NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount));
+                            characterInCurrentCount = 0;
                         }
+
                     }
+                    
                 }
                 string value = values.Aggregate((a, b) => a + " " + b);
                 WriteTableEntry(list[i].Item1.ToString(), value);
+                System.Console.WriteLine(footer);
             }
-            System.Console.WriteLine(footer);
+        }
+
+        private static bool WordCanFitOnLine(string Word, int maxWidth, int charactersUsedSoFar)
+        {
+            return (Word.Length + charactersUsedSoFar < maxWidth - 2);
+        }
+
+        private static int NumberOfCharsLeftOnLine(int maxWidth, int charactersUsedSoFar)
+        {
+            return (maxWidth - 2) - charactersUsedSoFar;
         }
     }
 }
