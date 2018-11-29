@@ -73,23 +73,17 @@ namespace Utilities
                 {
                     var word = values[j];
                     values[j] = "";
-                    while(word != "")
+                    while (!WordCanFitOnLine(word, maxWidth, characterInCurrentCount))
                     {
-                        if(WordCanFitOnLine(word, maxWidth, characterInCurrentCount))
-                        {
-                            values[j] += word; 
-                            characterInCurrentCount += word.Length + 1;
-                            word = "";
-                        }
-                        else
-                        {
-                            //word can't fit on line
-                            values[j] += word.Substring(0, NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount)) + "-" + escapeChar + " ";
-                            //remove chars added to values, from index numberOfCharsLeftOnLine(maxWidth, characterInCurrentCount) to last 
-                            word = word.Substring(NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount), word.Length - NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount));
-                            characterInCurrentCount = 0;
-                        }
+                        //word can't fit on line
+                        values[j] += word.Substring(0, NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount)) + "-" + escapeChar;
+                        //remove chars added to values, from index numberOfCharsLeftOnLine(maxWidth, characterInCurrentCount) to last 
+                        word = word.Substring(NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount), word.Length - NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount));
+                        characterInCurrentCount = 0;
                     }
+
+                    values[j] += word;
+                    characterInCurrentCount += word.Length + 1;
                 }
                 string value = values.Aggregate((a, b) => a + " " + b);
                 WriteTableEntry(list[i].Item1.ToString(), value);
