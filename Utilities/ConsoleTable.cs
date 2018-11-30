@@ -68,26 +68,26 @@ namespace Utilities
             for (int i = 0; i < list.Count; i++)
             {
                 string[] values = list[i].Item2.ToString().Replace("\n", escapeChar + " ").Split(' ');
-                int characterInCurrentCount = 0;
+                int characterCount = 0;
                 for (int j = 0; j < values.Length; j++)
                 {
                     var word = values[j];
                     values[j] = "";
-                    while(word != "")
+                    while(word.Length != 0)
                     {
-                        if(WordCanFitOnLine(word, maxWidth, characterInCurrentCount))
+                        if(WordCanFitOnLine(word, characterCount))
                         {
                             values[j] += word; 
-                            characterInCurrentCount += word.Length + 1;
+                            characterCount += word.Length + 1;
                             word = "";
                         }
                         else
                         {
                             //word can't fit on line
-                            values[j] += word.Substring(0, NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount)) + "-" + escapeChar + " ";
+                            values[j] += word.Substring(0, NumberOfCharsLeftOnLine(characterCount)) + "-" + escapeChar + " ";
                             //remove chars added to values, from index numberOfCharsLeftOnLine(maxWidth, characterInCurrentCount) to last 
-                            word = word.Substring(NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount), word.Length - NumberOfCharsLeftOnLine(maxWidth, characterInCurrentCount));
-                            characterInCurrentCount = 0;
+                            word = word.Substring(NumberOfCharsLeftOnLine(characterCount), word.Length - NumberOfCharsLeftOnLine(characterCount));
+                            characterCount = 0;
                         }
                     }
                 }
@@ -97,14 +97,14 @@ namespace Utilities
             System.Console.WriteLine(footer);
         }
 
-        private static bool WordCanFitOnLine(string Word, int maxWidth, int charactersUsedSoFar)
+        private static bool WordCanFitOnLine(string word, int characterCount)
         {
-            return (Word.Length + charactersUsedSoFar < maxWidth - 2);
+            return (word.Length + characterCount < fixedWidth);
         }
 
-        private static int NumberOfCharsLeftOnLine(int maxWidth, int charactersUsedSoFar)
+        private static int NumberOfCharsLeftOnLine(int characterCount)
         {
-            return (maxWidth - 2) - charactersUsedSoFar;
+            return fixedWidth - characterCount;
         }
     }
 }
