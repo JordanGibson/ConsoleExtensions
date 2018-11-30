@@ -93,8 +93,8 @@ namespace Utilities
                 }
                 string value = values.Aggregate((a, b) => a + " " + b);
                 WriteTableEntry(list[i].Item1.ToString(), value);
-                System.Console.WriteLine(footer);
             }
+            System.Console.WriteLine(footer);
         }
 
         private static bool WordCanFitOnLine(string Word, int maxWidth, int charactersUsedSoFar)
