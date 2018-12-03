@@ -12,6 +12,8 @@ namespace Utilities
         private static int rightSpacing = 0;
         private static string[] headers;
         private static char escapeChar = '䠣';
+        private static string nLS = "-" + escapeChar + " ";
+        private static int charCount = 1;
 
         private static int fixedWidth { get { return rightSpacing - 2; } }
 
@@ -67,31 +69,19 @@ namespace Utilities
 
             for (int i = 0; i < list.Count; i++)
             {
-                string[] values = list[i].Item2.ToString().Replace("\n", escapeChar + " ").Split(' ');
-                int characterCount = 0;
-                for (int j = 0; j < values.Length; j++)
+                charCount = 1;
+                string[] values = list[i].Item2.ToString().Replace("\n", escapeChar + "").Split(' ');
+                string value = "";
+                string tempval = values.Aggregate((a, b) => a + " " + b);
+                for (int j = 0; j < tempval.Length; j++)
                 {
-                    var word = values[j];
-                    values[j] = "";
-                    while(word.Length != 0)
-                    {
-                        if(WordCanFitOnLine(word, characterCount))
-                        {
-                            values[j] += word; 
-                            characterCount += word.Length + 1;
-                            word = "";
-                        }
-                        else
-                        {
-                            //word can't fit on line
-                            values[j] += word.Substring(0, NumberOfCharsLeftOnLine(characterCount)) + "-" + escapeChar + " ";
-                            //remove chars added to values, from index numberOfCharsLeftOnLine(maxWidth, characterInCurrentCount) to last 
-                            word = word.Substring(NumberOfCharsLeftOnLine(characterCount), word.Length - NumberOfCharsLeftOnLine(characterCount));
-                            characterCount = 0;
-                        }
-                    }
+                    value += tempval[j];
+                    charCount++;
+                    if (charCount % fixedWidth-1 == 0)
+                        value += nLS;
                 }
-                string value = values.Aggregate((a, b) => a + " " + b);
+                //always end on escape char so new line not affected
+                value += escapeChar;
                 WriteTableEntry(list[i].Item1.ToString(), value);
             }
             System.Console.WriteLine(footer);
@@ -99,7 +89,7 @@ namespace Utilities
 
         private static bool WordCanFitOnLine(string word, int characterCount)
         {
-            return (word.Length + characterCount < fixedWidth);
+            return (word.Length + characterCount < fixedWidth+1);
         }
 
         private static int NumberOfCharsLeftOnLine(int characterCount)
