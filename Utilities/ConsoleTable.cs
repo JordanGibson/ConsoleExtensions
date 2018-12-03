@@ -12,7 +12,6 @@ namespace Utilities
         private static int rightSpacing = 0;
         private static string[] headers;
         private static char escapeChar = '䠣';
-        private static string nLS = "-" + escapeChar + " ";
         private static int charCount = 1;
 
         private static int fixedWidth { get { return rightSpacing - 2; } }
@@ -77,24 +76,14 @@ namespace Utilities
                 {
                     value += tempval[j];
                     charCount++;
-                    if (charCount % fixedWidth-1 == 0)
-                        value += nLS;
+                    if (charCount % fixedWidth - 1 == 0)
+                        value += (tempval[j] == " ".ToCharArray()[0]) ? escapeChar + " " : "-" + escapeChar + " ";
                 }
                 //always end on escape char so new line not affected
                 value += escapeChar;
                 WriteTableEntry(list[i].Item1.ToString(), value);
             }
             System.Console.WriteLine(footer);
-        }
-
-        private static bool WordCanFitOnLine(string word, int characterCount)
-        {
-            return (word.Length + characterCount < fixedWidth+1);
-        }
-
-        private static int NumberOfCharsLeftOnLine(int characterCount)
-        {
-            return fixedWidth - characterCount;
         }
     }
 }
